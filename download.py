@@ -40,18 +40,22 @@ def download(job,min=-1,targetdir=None,force_redownload=False,sub_list=None):
                   targetfilename = targetdir + newmainpart + "." + ending
                   automaticname = f.localDir + f.namePattern
                 else:
-                  automaticname = f.outputdir + f.namePattern
-                  targetfilename = f.outputdir + f.namePattern
+                  automaticname = sj.outputdir + f.namePattern
+                  targetfilename = sj.outputdir + f.namePattern
                 if (os.path.isfile(targetfilename)) :
                     print "file ", f.namePattern, " from job", str(thejob.id), ".", str(sj.id), " already loaded"
                     if force_redownload:
                         print "load it anyway"
                         f.get()
                         if automaticname!=targetfilename:
-                          commands.getstatusoutput("mv " + automaticname + " " + targetfilename)
+                          stat, out = commands.getstatusoutput("mv " + automaticname + " " + targetfilename)
+                          if stat!=0:
+                             print "error in renaming ", output
                 else:
                         f.get()
                         if automaticname!=targetfilename:
-                          commands.getstatusoutput("mv " + automaticname + " " + targetfilename)
+                          stat, out = commands.getstatusoutput("mv " + automaticname + " " + targetfilename)
+                          if stat!=0:
+                             print "error in renaming ", output
                 
         
