@@ -1,7 +1,7 @@
 # Downloads the output which is saved on the grid to your local output directory.
 # Skips already downloaded files.
 import os, commands, re
-def download(job,min=-1,targetdir=None,force_redownload=False):
+def download(job,min=-1,targetdir=None,force_redownload=False,sub_list=None):
     # if no targetdir specified, don't do magic with it
     if isinstance(targetdir, str):
       # otherwise create target dir (-p = don't complain if it already exists)
@@ -20,7 +20,13 @@ def download(job,min=-1,targetdir=None,force_redownload=False):
     else :
        thejob = job
 
-    for sj in thejob.subjobs.select(status="completed"):
+    if type(sub_list) is list:
+       subjobs = []
+       for sj in sub_list:
+          subjobs += thejob.subjobs.select(sj,sj,status="completed")
+    else:
+       subjobs = thejob.subjobs.select(status="completed")
+    for sj in subjobs:
         if sj.id>min:
             for f in sj.outputfiles.get("*.root"):
                 if ""==f.lfn:
