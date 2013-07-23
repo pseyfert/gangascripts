@@ -15,6 +15,7 @@ def download(job,min=-1,targetdir=None,force_redownload=False):
 
     # check if job id or job object has been given
     if isinstance (job, int) :
+       print "sorry, this doesn't work if you just import my script. needs to be in ~/.ganga.py"
        thejob = jobs(job)
     else :
        thejob = job
