@@ -30,8 +30,8 @@ def download(job,min=-1,targetdir=None,force_redownload=False):
                   ending = re.sub(".*\.","",f.namePattern)  # the file ending is everything after the last .
                   mainpart = re.sub("\."+ending,"",f.namePattern) # the main part of the filename is everything before the ending (removing the .)
                   newmainpart = mainpart + "_" + str(sj.id)
-                  targetfilename = targetdir + "/" + newmainpart + "." + ending
-                  automaticname = f.localDir + "/" + f.namePattern
+                  targetfilename = targetdir + newmainpart + "." + ending
+                  automaticname = f.localDir + f.namePattern
                 else:
                   automaticname = f.outputdir + f.namePattern
                   targetfilename = f.outputdir + f.namePattern
