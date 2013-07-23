@@ -12,17 +12,22 @@ def merge(job,files,outputdir="",args=""):
             if os.path.isfile(src):
                 list.append(j)
     print list
-    if outputdir!="":
-        rm.merge(list,outputdir)
-    else:
-        rm.merge(list)
+
+    #if outputdir!="":
+    #    rm.merge(list,outputdir)
+    #else:
+    # Merge first in jobs own outputdirectory
+    print job.outputdir
+    rm.merge(list,job.outputdir)
     if outputdir!="":
         for f in files:
-            src = os.path.join(outputdir,f)
-            name = j.name + f
+            src = os.path.join(job.outputdir,f)
+            name = j.name +"_"+ f
             dest = os.path.join(outputdir,name)
             print src
             print dest
             shutil.move(src,dest)
+
+    print "Merging of {0} done".format(job.name)
             
     
