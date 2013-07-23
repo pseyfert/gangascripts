@@ -8,6 +8,7 @@ def download(job,min=-1,targetdir=None,force_redownload=False):
       commands.getstatusoutput('mkdir -p ' + targetdir)
       # if targetdir doesn't end with / then add it
       if targetdir.endswith("/"):
+       dummy = 1+1
        # nothing to do
       else:
        targetdir = targetdir + "/"
