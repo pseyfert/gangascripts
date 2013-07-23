@@ -45,8 +45,6 @@ def download(job,targetDir=None,force_redownload=False,sub_list=None):
                 f.localDir = sj.outputdir
                 automaticName = sj.outputdir + f.namePattern 
                 targetFileName = sj.outputdir + f.namePattern
-                print automaticName
-                print targetFileName
             successful = False
             if (os.path.isfile(targetFileName)) :
                 print "file ", f.namePattern, " from job", str(job.id), ".", str(sj.id), " already loaded"
@@ -54,14 +52,29 @@ def download(job,targetDir=None,force_redownload=False,sub_list=None):
                     print "load it anyway"
                     f.get()
                     if automaticName!=targetFileName:
-                        commands.getstatusoutput("mv " + automaticName + " " + targetFileName)
-                        shutil.move(automaticName,targetFileName)
+                        stat, out = commands.getstatusoutput("mv " + automaticname + " " + targetfilename)
+                        if stat!=0:
+                            print "error in renaming ", output
+                if (os.path.isfile(targetFileName)) :
+                    downloadedIDs.append(sj.id)
+                else:
+                    print "Download of {0} failed".format(sj.id)
+                    failedIDs.append(sj.id)
             else:
                 f.get()
                 if automaticName!=targetFileName:
-                    commands.getstatusoutput("mv " + automaticName + " " + targetFileName)
-                    shutil.move(automaticName,targetFileName)
-        
+                    #shutil.move(automaticName,targetFileName)
+                    stat, out = commands.getstatusoutput("mv " + automaticname + " " + targetfilename)
+                    if stat!=0:
+                        print "error in renaming ", output
+
+                if (os.path.isfile(targetFileName)) :
+                    downloadedIDs.append(sj.id)
+                else:
+                    failedIDs.append(sj.id)
+                    print "Download of {0} failed".format(sj.id)
+
+    return downloadedIDs,failedIDs
 
 import merge
 
