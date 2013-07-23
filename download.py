@@ -1,6 +1,6 @@
 # Downloads the output which is saved on the grid to your local output directory.
 # Skips already downloaded files.
-import os
+import os, commands, re
 def download(job,min=-1,targetdir=None,force_redownload=False):
     # if no targetdir specified, don't do magic with it
     if isinstance(targetdir, str):
