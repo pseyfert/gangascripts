@@ -41,10 +41,10 @@ def download(job,min=-1,targetdir=None,force_redownload=False):
                         print "load it anyway"
                         f.get()
                         if automaticname!=targetfilename:
-                          commands.getstatusoutput("mv " + automaticfilename + " " + targetfilename)
+                          commands.getstatusoutput("mv " + automaticname + " " + targetfilename)
                 else:
                         f.get()
                         if automaticname!=targetfilename:
-                          commands.getstatusoutput("mv " + automaticfilename + " " + targetfilename)
+                          commands.getstatusoutput("mv " + automaticname + " " + targetfilename)
                 
         
