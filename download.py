@@ -1,7 +1,9 @@
 # Downloads the output which is saved on the grid to your local output directory.
 # Skips already downloaded files.
+
 import os, commands, re, glob
-def download(job,targetDir=None,force_redownload=False):
+from Ganga.GPI import jobs
+def download(job,targetDir=None,force_redownload=False,sub_list=None):
     # check if job id or job object has been given
     if isinstance (job, int) :
         job = jobs(job)
@@ -9,33 +11,23 @@ def download(job,targetDir=None,force_redownload=False):
     # check if job has subjobs
     jobList = []
     if len(job.subjobs)>0:
-        jobList = job.subjobs.select(status="completed")
+        if type(sub_list) is list:
+            jobList = []
+            for sj in sub_list:
+                jobList += job.subjobs.select(sj,sj,status="completed")
+        else:
+            jobList = job.subjobs.select(status="completed")
     else:
         if job.status=="completed":
             jobList = [job]
+    # Ok sub_list overwrites the rest
     # if no targetdir specified, don't do magic with it
     if isinstance(targetDir, str):
         commands.getstatusoutput('mkdir -p ' + targetDir)
-        # explicitly create directory and delete files with same name pattern
-        #try:    
-        #    os.mkdir(targetDir)
-        #except:
-        #    print "Directory {0} already exists.".format(outputdir)
-        #
-        #    print "Deleting files with same name pattern as output."
-        #    try:
-        #        files = []
-        #        for f in job.outputfiles:
-        #            files += [f for f in glob.glob(f.namePattern+"*")]
-        #        for f in files:
-        #            os.remove(f)
-        #        print "Delete directory."
-        #    except:
-        #        print "Something went wrong."
-        # if targetdir doesn't end with / then add it                
         if not targetDir.endswith("/"):
             targetDir = targetDir + "/"
-
+    downloadedIDs = []
+    failedIDs = []
     # download files
     for sj in jobList:
         for f in sj.outputfiles.get("*.root"):
@@ -50,8 +42,12 @@ def download(job,targetDir=None,force_redownload=False):
                 targetFileName = targetDir + newMainPart + "." + ending
                 automaticName = f.localDir + f.namePattern
             else:
-                automaticName = sj.outputdir + f.namePattern
+                f.localDir = sj.outputdir
+                automaticName = sj.outputdir + f.namePattern 
                 targetFileName = sj.outputdir + f.namePattern
+                print automaticName
+                print targetFileName
+            successful = False
             if (os.path.isfile(targetFileName)) :
                 print "file ", f.namePattern, " from job", str(job.id), ".", str(sj.id), " already loaded"
                 if force_redownload:
@@ -59,12 +55,12 @@ def download(job,targetDir=None,force_redownload=False):
                     f.get()
                     if automaticName!=targetFileName:
                         commands.getstatusoutput("mv " + automaticName + " " + targetFileName)
-                        #shutil.move(automaticName,targetFileName)
+                        shutil.move(automaticName,targetFileName)
             else:
                 f.get()
                 if automaticName!=targetFileName:
                     commands.getstatusoutput("mv " + automaticName + " " + targetFileName)
-                    #shutil.move(automaticName,targetFileName)
+                    shutil.move(automaticName,targetFileName)
         
 
 import merge
@@ -84,6 +80,24 @@ def move(job,outputdir,remove = False, overwrite = False):
     for j in job.subjobs:
         dir = j.outputdir
         files = os.listdir(dir)
+        # explicitly create directory and delete files with same name pattern
+        #try:    
+        #    os.mkdir(targetDir)
+        #except:
+        #    print "Directory {0} already exists.".format(outputdir)
+        #
+        #    print "Deleting files with same name pattern as output."
+        #    try:
+        #        files = []
+        #        for f in job.outputfiles:
+        #            files += [f for f in glob.glob(f.namePattern+"*")]
+        #        for f in files:
+        #            os.remove(f)
+        #        print "Delete directory."
+        #    except:
+        #        print "Something went wrong."
+        # if targetdir doesn't end with / then add it                
+    
         try:    
             os.mkdir(outputdir)
         except:
