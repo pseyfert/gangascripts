@@ -4,7 +4,7 @@ import shutil
 import os, commands, re, glob
 from Ganga.GPI import jobs
 
-def getJobList(job):
+def getJobList(job,sub_list=None):
     if isinstance (job, int) :
         job = jobs(job)
 
@@ -24,7 +24,7 @@ def getJobList(job):
 
 def download(job,targetDir=None,force_redownload=False,sub_list=None):
     # check if job id or job object has been given
-    job, jobList = getJobList(job)
+    job, jobList = getJobList(job,sub_list)
     # Ok sub_list overwrites the rest
     # if no targetdir specified, don't do magic with it
     if isinstance(targetDir, str):
@@ -78,7 +78,8 @@ def download(job,targetDir=None,force_redownload=False,sub_list=None):
                 else:
                     failedIDs.append(sj.id)
                     print "Download of {0} failed".format(sj.id)
-
+    if  ( (len(job.subjobs)>0 ) and ( len(downloadedIDs)==len(job.subjobs) ) ):
+        print "All subjobs downloaded!!! Have fun!"
     return downloadedIDs,failedIDs
 
 
