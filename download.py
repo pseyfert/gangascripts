@@ -1,6 +1,6 @@
 # Downloads the output which is saved on the grid to your local output directory.
 # Skips already downloaded files.
-import os, commands, re
+import os, commands, re, tempfile
 def download(job,min=-1,targetdir=None,force_redownload=False,sub_list=None):
     # if no targetdir specified, don't do magic with it
     if isinstance(targetdir, str):
@@ -33,7 +33,8 @@ def download(job,min=-1,targetdir=None,force_redownload=False,sub_list=None):
                     print "no lfn for file ", f.namePattern, " from job", str(thejob.id), ".", str(sj.id)
                     continue
                 if isinstance(targetdir,str):
-                  f.localDir = targetdir
+                  targettempdir = tempfile.mkdtemp(dir=targetdir)
+                  f.localDir = targettemp
                   ending = re.sub(".*\.","",f.namePattern)  # the file ending is everything after the last .
                   mainpart = re.sub("\."+ending,"",f.namePattern) # the main part of the filename is everything before the ending (removing the .)
                   newmainpart = mainpart + "_" + str(sj.id)
@@ -57,5 +58,7 @@ def download(job,min=-1,targetdir=None,force_redownload=False,sub_list=None):
                           stat, out = commands.getstatusoutput("mv " + automaticname + " " + targetfilename)
                           if stat!=0:
                              print "error in renaming ", output
+                if isinstance(targetdir,str):
+                  shutil.rmtree(targettempdir)
                 
         
