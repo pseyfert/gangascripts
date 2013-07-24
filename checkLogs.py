@@ -1,4 +1,4 @@
-def checkLogs(job,sub_list=[]):
+def checkLogs(job,sub_list=[],hack_ignoreTerminated=False):
     """ Check output logs for jobs producing MicroDSTs"""
     
     KnownErrors={'KillHltBanks':[],'FileRecordDataSvc':[]}
@@ -115,7 +115,10 @@ def checkLogs(job,sub_list=[]):
                         flags.add("events processed")
         f.close()
         
-        MandatoryFlags = set(['All events','zoosumm','Finalized','events processed'])#,'Terminated'])
+        if hack_ignoreTerminated:
+          MandatoryFlags = set(['All events','zoosumm','Finalized','events processed'])
+        else:
+          MandatoryFlags = set(['All events','zoosumm','Finalized','events processed','Terminated'])
         if len(MandatoryFlags-flags)>0:
             print '%4s : not complete'%(subjob.id),', missing :',MandatoryFlags-flags
             mandat_failers += [subjob.id]
