@@ -40,7 +40,7 @@ def download(job,targetDir=None,force_redownload=False,sub_list=None):
                     print "load it anyway"
                     f.get()
                     if automaticName!=targetFileName:
-                        stat, out = commands.getstatusoutput("mv " + automaticname + " " + targetfilename)
+                        stat, out = commands.getstatusoutput("mv " + automaticName + " " + targetFileName)
                         if stat!=0:
                             print "error in renaming ", output
                 if (os.path.isfile(targetFileName)) :
@@ -52,7 +52,7 @@ def download(job,targetDir=None,force_redownload=False,sub_list=None):
                 f.get()
                 if automaticName!=targetFileName:
                     #shutil.move(automaticName,targetFileName)
-                    stat, out = commands.getstatusoutput("mv " + automaticname + " " + targetfilename)
+                    stat, out = commands.getstatusoutput("mv " + automaticName + " " + targetFilename)
                     if stat!=0:
                         print "error in renaming ", output
 

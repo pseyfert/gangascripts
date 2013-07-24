@@ -1,4 +1,4 @@
-
+from Ganga.GPI import jobs
 def getJobList(job,sub_list=None):
     if isinstance (job, int) :
         job = jobs(job)
