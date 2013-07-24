@@ -1,10 +1,10 @@
 # Downloads the output which is saved on the grid to your local output directory.
 # Skips already downloaded files.
-
+import shutil
 import os, commands, re, glob
 from Ganga.GPI import jobs
-def download(job,targetDir=None,force_redownload=False,sub_list=None):
-    # check if job id or job object has been given
+
+def getJobList(job):
     if isinstance (job, int) :
         job = jobs(job)
 
@@ -20,6 +20,11 @@ def download(job,targetDir=None,force_redownload=False,sub_list=None):
     else:
         if job.status=="completed":
             jobList = [job]
+    return job,jobList
+
+def download(job,targetDir=None,force_redownload=False,sub_list=None):
+    # check if job id or job object has been given
+    job, jobList = getJobList(job)
     # Ok sub_list overwrites the rest
     # if no targetdir specified, don't do magic with it
     if isinstance(targetDir, str):
@@ -76,21 +81,56 @@ def download(job,targetDir=None,force_redownload=False,sub_list=None):
 
     return downloadedIDs,failedIDs
 
-import merge
+
+
+# Merges the output of a job (.root) by collecting all downloaded files.
+import os, shutil
+from Ganga.GPI import RootMerger
+def merge(job,files,outputdir="",args=""):
+    rm = RootMerger()
+    rm.files = files
+    rm.args = ""
+    list = []
+    job, jobList = getJobList(job)
+    for j in jobList:
+        for f in files:
+            src = os.path.join(j.outputdir,f)
+            if os.path.isfile(src):
+                list.append(j)
+    print list
+
+    #if outputdir!="":
+    #    rm.merge(list,outputdir)
+    #else:
+    # Merge first in jobs own outputdirectory
+    print job.outputdir
+    rm.merge(list,job.outputdir)
+    if outputdir!="":
+        for f in files:
+            src = os.path.join(job.outputdir,f)
+            name = j.name +"_"+ f
+            dest = os.path.join(outputdir,name)
+            print src
+            print dest
+            shutil.move(src,dest)
+
+    print "Merging of {0} done".format(job.name)
+
 
 def downloadAndMerge(job,files,outputdir="",args=""):
     # check if job id or job object has been given
-    if isinstance (job, int) :
-        job = jobs(job)
+    #if isinstance (job, int) :
+    #    job = jobs(job)
     download(job)
     merge(job,files,outputdir,args)
     print "Download and merging of job {0} done".format(job.id)
 
-import shutil
+
+
+
 def move(job,outputdir,remove = False, overwrite = False):
-    if isinstance (job, int) :
-        job = jobs(job)
-    for j in job.subjobs:
+    job, jobList = getJobList(job)
+    for j in jobList:
         dir = j.outputdir
         files = os.listdir(dir)
         # explicitly create directory and delete files with same name pattern
@@ -134,3 +174,17 @@ def move(job,outputdir,remove = False, overwrite = False):
                 shutil.move(src,dest)
                 if (remove):
                     os.remove(src)
+
+
+# Removes locally stored files.
+def remove(job):
+    job, jobList = getJobList(job)
+    for j in jobList:
+        dir = j.outputdir
+        files = os.listdir(dir)
+        for file in files:
+            if file.endswith(".root"):
+                #print os.path.join(dir,file)
+                os.remove(os.path.join(dir,file))
+                
+
