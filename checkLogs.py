@@ -1,4 +1,4 @@
-def checkLogs(job,sub_list=[],hack_ignoreTerminated=False,hack_printUnknownErrors=True):
+def checkLogs(job,sub_list=[],hack_ignoreTerminated=False,hack_printUnknownErrors=True,ZooWriterInstance='ZooWriter'):
     
     KnownErrors={'KillHltBanks':[],'FileRecordDataSvc':[]}
     
@@ -96,7 +96,7 @@ def checkLogs(job,sub_list=[],hack_ignoreTerminated=False,hack_printUnknownError
                             counters['Int. lum uncert.']=float(words[6])
                         
             if level == 'SUCCESS':
-                if alg=='z':
+                if alg==ZooWriterInstance:
                     if line.rfind("events processed")>-1:
                         flags.add('zoosumm')
                         counters['ZooEvents']=int(words[2])
