@@ -5,7 +5,10 @@ def download(job,min=-1,targetdir=None,force_redownload=False,sub_list=None):
     # if no targetdir specified, don't do magic with it
     if isinstance(targetdir, str):
       # otherwise create target dir (-p = don't complain if it already exists)
-      commands.getstatusoutput('mkdir -p ' + targetdir)
+      stat, output = commands.getstatusoutput('mkdir -p ' + targetdir)
+      if 0!=stat:
+         print "error creating target directory", output
+         return
       # if targetdir doesn't end with / then add it
       if targetdir.endswith("/"):
        dummy = 1+1
