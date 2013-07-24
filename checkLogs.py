@@ -1,6 +1,10 @@
 from Ganga.GPI import jobs
 
-def checkLogs(job,sub_list=[],hack_ignoreTerminated=False,hack_printUnknownErrors=True,ZooWriterInstance='ZooWriter'):
+def checkLogs(job,
+              sub_list=[],
+              hack_ignoreTerminated=False, # for Tau23Mu ntuple production of MC2012 w/o propper Linker Table fix
+              hack_printUnknownErrors=True,
+              ZooWriterInstance='ZooWriter'):
     
     if isinstance (job, int) :
         job = jobs(job)
