@@ -1,4 +1,7 @@
 from Ganga.GPI import jobs
+import os
+from sets import Set
+import re
 
 def checkLogs(job,
               sub_list=[],
