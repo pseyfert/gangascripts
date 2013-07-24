@@ -5,20 +5,20 @@ def merge(job,files,outputdir="",args=""):
     rm = RootMerger()
     rm.files = files
     rm.args = ""
-    list = []
+    jobsToMerge = []
     for j in job.subjobs.select(status='completed'):
         for f in files:
             src = os.path.join(j.outputdir,f)
             if os.path.isfile(src):
-                list.append(j)
-    print list
+                jobsToMerge.append(j)
+    print jobsToMerge
 
     #if outputdir!="":
-    #    rm.merge(list,outputdir)
+    #    rm.merge(jobsToMerge,outputdir)
     #else:
     # Merge first in jobs own outputdirectory
     print job.outputdir
-    rm.merge(list,job.outputdir)
+    rm.merge(jobsToMerge,job.outputdir)
     if outputdir!="":
         for f in files:
             src = os.path.join(job.outputdir,f)
