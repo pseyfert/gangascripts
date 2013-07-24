@@ -1,5 +1,4 @@
-def checkLogs(job,sub_list=[],hack_ignoreTerminated=False):
-    """ Check output logs for jobs producing MicroDSTs"""
+def checkLogs(job,sub_list=[],hack_ignoreTerminated=False,hack_printUnknownErrors=True):
     
     KnownErrors={'KillHltBanks':[],'FileRecordDataSvc':[]}
     
@@ -60,16 +59,16 @@ def checkLogs(job,sub_list=[],hack_ignoreTerminated=False):
             
             if level == 'ERROR':
                 
-                ###FIXME
-                ####print str(subjob.id) + "\t" + Line
-                known = True#False
+                if hack_printUnknownErrors:
+                   known = False
+                else:
+                   known = True # if unknown error shall not be printed, consider all errors as known
                 if alg in KnownErrors.keys():
                     if len(KnownErrors[alg])==0: known=True
                     for err in KnownErrors[alg]:
                         if line.rfind(err)>-1: known=True
-                ###FIXME
-                ######if not known:        
-                ######    print '%4s : %s'%(subjob.id,line)
+                if not known:        
+                    print '%4s : %s'%(subjob.id,line)
                     
             if level == 'INFO':
                 
