@@ -1,12 +1,15 @@
 # Merges the output of a job (.root) by collecting all downloaded files.
 import os, shutil
 from Ganga.GPI import RootMerger
+import getjoblist
+
 def merge(job,files,outputdir="",args=""):
     rm = RootMerger()
     rm.files = files
     rm.args = ""
     jobsToMerge = []
-    for j in job.subjobs.select(status='completed'):
+    job, jobList = getJobList(job)
+    for j in jobList:
         for f in files:
             src = os.path.join(j.outputdir,f)
             if os.path.isfile(src):
