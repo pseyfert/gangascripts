@@ -123,20 +123,8 @@ def checkLogs(job,sub_list=[],hack_ignoreTerminated=False,hack_printUnknownError
             mandat_failers += [subjob.id]
             continue
    
-        #if counters['EVENT LOOP']==0:
-        #    print logs,'NO EVENT processes in EVENT LOOP'
-        #    continue
-        
         evt_tot           += counters['events processed']
         zooev             += counters['ZooEvents']
-        
-        #lumi_value        += counters['Int. lum']
-        #lumi_uncertainty  += counters['Int. lum uncert.']
-        
-#        if 'CopyODIN_SeqJpsi2MuMu' in counters.keys():
-#            evt_wrt+= counters['CopyODIN_SeqJpsi2MuMu']
-#        if 'CopyODIN_SeqDiMuonInc' in counters.keys():
-#            evt_wrt+= counters['CopyODIN_SeqDiMuonInc']
         n_ok +=1
         
         jobCounters  = _addCounters(jobCounters, counters)
@@ -148,7 +136,6 @@ def checkLogs(job,sub_list=[],hack_ignoreTerminated=False,hack_printUnknownError
         print "Nb of " + particle + "   %4d"%(plist[particle])
     print "Nb of ZooEvents      = %4d"%(zooev)
     print "mandatory failures: ", mandat_failers
-#    print "Nb of events written = %10d"%(evt_wrt)
     jobCounters['failed subjobs'] = len(mandat_failers)
     return jobCounters, mandat_failers
 
