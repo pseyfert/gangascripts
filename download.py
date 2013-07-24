@@ -1,6 +1,7 @@
 # Downloads the output which is saved on the grid to your local output directory.
 # Skips already downloaded files.
 import os, commands, re, tempfile
+from Ganga.GPI import jobs
 def download(job,min=-1,targetdir=None,force_redownload=False,sub_list=None):
     # if no targetdir specified, don't do magic with it
     if isinstance(targetdir, str):
@@ -18,7 +19,6 @@ def download(job,min=-1,targetdir=None,force_redownload=False,sub_list=None):
 
     # check if job id or job object has been given
     if isinstance (job, int) :
-       print "sorry, this doesn't work if you just import my script. needs to be in ~/.ganga.py"
        thejob = jobs(job)
     else :
        thejob = job
