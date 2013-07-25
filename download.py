@@ -3,7 +3,7 @@
 import shutil
 import os, commands, re, glob
 from Ganga.GPI import jobs
-import getjoblist
+from getJobList import getJobList
 
 def download(job,targetDir=None,force_redownload=False,sub_list=None):
     # check if job id or job object has been given
