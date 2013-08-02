@@ -52,7 +52,7 @@ def download(job,targetDir=None,force_redownload=False,sub_list=None):
                 f.get()
                 if automaticName!=targetFileName:
                     #shutil.move(automaticName,targetFileName)
-                    stat, out = commands.getstatusoutput("mv " + automaticName + " " + targetFilename)
+                    stat, out = commands.getstatusoutput("mv " + automaticName + " " + targetFileName)
                     if stat!=0:
                         print "error in renaming ", output
 
@@ -109,8 +109,18 @@ def downloadAndMerge(job,files,outputdir="",args=""):
     merge(job,files,outputdir,args)
     print "Download and merging of job {0} done".format(job.id)
 
+def removeLFNs(job):
+    job, jobList = getJobList(job)
+    for sj in jobList:
+        for f in sj.outputfiles.get("*.root"):
+            if ""!=f.lfn:
+                print "Removing ", f.namePattern, " of job ",sj.id
+                f.remove()
 
-
+def removeJob(job):
+    removeLFNs(job)
+    job.remove()
+    
 
 def move(job,outputdir,remove = False, overwrite = False):
     job, jobList = getJobList(job)
