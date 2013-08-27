@@ -1,3 +1,7 @@
+## script to determine generator level cut efficiencies for recent productions
+## provided by Mike Williams (MIT)
+## all appreciation go to Mike, all accusation to me
+
 import urllib2
 from Ganga.GPI import jobs
 
