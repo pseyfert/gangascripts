@@ -1,11 +1,10 @@
 import urllib2
 from Ganga.GPI import jobs
 
-jobid = 22
-j = jobs(jobid)
-gen = 0
-acc = 0
-for f in j.inputdata:
+def mikefromds(dataset):
+  gen = 0
+  acc = 0
+  for f in dataset:
     furl = f.name.replace('ALLSTREAMS.DST','LOG')
     furl = furl.replace('_1.allstreams.dst','')
     id = furl.split('/')[5]
@@ -53,4 +52,13 @@ for f in j.inputdata:
     except urllib2.HTTPError:
         print 'Error! %s not found!' % furl
 
-print 'total:', acc, gen, acc/(1.0*gen)
+  print 'total:', acc, gen, acc/(1.0*gen)
+
+def gscript(jid):
+  if isinstance (jid, int) :
+     j = jobs(jid)
+  else :
+     j = jid
+  mike_from_ds(j.inputdata)
+
+
