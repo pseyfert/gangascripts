@@ -5,7 +5,7 @@
 import urllib2
 from Ganga.GPI import jobs
 
-def mikefromds(dataset):
+def GeneratorEfficiencyFromDataset(dataset):
   gen = 0
   acc = 0
   for f in dataset:
@@ -58,11 +58,11 @@ def mikefromds(dataset):
 
   print 'total:', acc, gen, acc/(1.0*gen)
 
-def gscript(jid):
+def GeneratorEfficiencyFromJob(jid):
   if isinstance (jid, int) :
      j = jobs(jid)
   else :
      j = jid
-  mike_from_ds(j.inputdata)
+  GeneratorEfficiencyFromDataset(j.inputdata)
 
 
