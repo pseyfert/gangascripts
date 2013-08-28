@@ -5,6 +5,14 @@
 import urllib2
 from Ganga.GPI import jobs
 
+def ErrorFormula(acc,gen):
+  # error from arXiv:0701199
+  fgen = float(gen)
+  facc = float(acc)
+  err = (facc+1.)*(facc+2.)/(fgen+2.)/(fgen+3.) - (facc+1.)*(facc+1.)/(fgen+2.)/(fgen+2.)
+  return err
+
+
 def GeneratorEfficiencyFromDataset(dataset):
   gen = 0
   acc = 0
@@ -56,7 +64,10 @@ def GeneratorEfficiencyFromDataset(dataset):
     except urllib2.HTTPError:
         print 'Error! %s not found!' % furl
 
-  print 'total:', acc, gen, acc/(1.0*gen)
+  from math import sqrt
+
+  print 'total:', acc, gen, acc/(1.0*gen), sqrt(ErrorFormula(acc,gen))
+  return acc, gen
 
 def GeneratorEfficiencyFromJob(jid):
   if isinstance (jid, int) :
