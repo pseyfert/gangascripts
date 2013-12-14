@@ -3,6 +3,19 @@ import os
 from sets import Set
 import re
 
+def _addCounters(old_counter,new_counter):
+    updated_counter = {}
+    old_keys = old_counter.keys()
+    new_keys = new_counter.keys()
+    for key in set(new_keys)-set(old_keys):
+        updated_counter[key]  = new_counter[key]
+    for key in set(old_keys)&set(new_keys):
+        updated_counter[key]  = old_counter[key] + new_counter[key]
+    for key in set(old_keys)-set(new_keys):
+        updated_counter[key]  = old_counter[key]
+    return updated_counter
+
+
 def checkLogs(job,
               sub_list=[],
               hack_ignoreTerminated=False, # for Tau23Mu ntuple production of MC2012 w/o propper Linker Table fix
@@ -137,6 +150,8 @@ def checkLogs(job,
    
         evt_tot           += counters['events processed']
         zooev             += counters['ZooEvents']
+        lumi_value        += counters['Int. lum']
+        lumi_uncertainty  += counters['Int. lum uncert.']
         n_ok +=1
         
         jobCounters  = _addCounters(jobCounters, counters)
