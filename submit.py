@@ -23,7 +23,7 @@ def resubmitStrangeJobs(j):
   j,jl = getJobList(j)
   counter,strange = checkLogs(j)
   for sj in strange:
-    sj.resubmit()
+    j.subjobs(sj).resubmit()
 
 def fixMyJobs(joblist):
   queueresubmission(joblist)
