@@ -4,6 +4,8 @@ import shutil
 import os, commands, re, glob
 from Ganga.GPI import jobs
 from getJobList import getJobList
+from Ganga.GPI import queues
+
 
 def download(job,targetDir=None,force_redownload=False,sub_list=None):
     # check if job id or job object has been given
@@ -181,4 +183,13 @@ def remove(job):
                 #print os.path.join(dir,file)
                 os.remove(os.path.join(dir,file))
                 
+def download(job,targetDir=None,force_redownload=False,sub_list=None):
 
+def queueDownload(joblist,targetDirBase=None,force_redownload=False):
+  #joblist may be jobs.select, or array of jobs or array of jobids
+  for job in joblist:
+    job,joblist = getJobList(job)
+    targetdir=None
+    if isinstance(targetDirBase,str):
+      targetdir = targetDirBase+"/"+job.name
+    queues.add(download,kwargs={"job":job,"targetDir":targetdir,"force_redownload":force_redownload})
