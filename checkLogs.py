@@ -3,6 +3,10 @@ import os
 from sets import Set
 import re
 
+def filterLogExt(f):
+    if re.search('Step.*log',f) : return True
+    return False
+
 def _addCounters(old_counter,new_counter):
     updated_counter = {}
     old_keys = old_counter.keys()
