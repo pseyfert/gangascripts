@@ -1,3 +1,6 @@
+# spot jobs in strange states
+# USAGE: whatsfishy(jobs.select(300,350))
+
 def whatsfishy(list):
   retlist = {}
   for j in list:
