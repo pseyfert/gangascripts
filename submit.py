@@ -8,7 +8,7 @@ def sub(j):
 
 def resub(j):
   j,jl = getJobList(j)
-  j.subjobs.select(status="failed").submit()
+  j.subjobs.select(status="failed").resubmit()
 
 def queuesubmission(joblist):
   for j in joblist:
