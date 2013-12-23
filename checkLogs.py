@@ -154,8 +154,14 @@ def checkLogs(job,
    
         evt_tot           += counters['events processed']
         zooev             += counters['ZooEvents']
-        lumi_value        += counters['Int. lum']
-        lumi_uncertainty  += counters['Int. lum uncert.']
+        
+        # lumi not always available (e.g. MC)
+        try:
+           lumi_value        += counters['Int. lum']
+           lumi_uncertainty  += counters['Int. lum uncert.']
+        except:
+           lumi_value        += 0.
+           lumi_uncertainty  += 0.
         n_ok +=1
         
         jobCounters  = _addCounters(jobCounters, counters)
