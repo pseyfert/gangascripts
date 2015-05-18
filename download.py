@@ -112,16 +112,30 @@ def downloadAndMerge(job,files,outputdir="",args=""):
     print "Download and merging of job {0} done".format(job.id)
 
 def removeLFNs(job):
+    ''' remove all outputfiles (ending with .root) of all subjobs of job '''
     job, jobList = getJobList(job)
+    success = True
     for sj in jobList:
         for f in sj.outputfiles.get("*.root"):
             if ""!=f.lfn:
                 print "Removing ", f.namePattern, " of job ",sj.id
-                f.remove()
+                try:
+                    f.remove()
+                except:
+                    # TODO: what if removal failed because it has been removed already?
+                    success = False
+    return success
 
 def removeJob(job):
-    removeLFNs(job)
-    job.remove()
+    '''
+    remove all outputfiles (ending with .root) of all subjobs of job.
+    If successful, remove the job from the jobslist
+    '''
+    if removeLFNs(job):
+        job.remove()
+    else:
+        print "Could not remove all grid files for job ",job.id,". not removing job"
+
     
 
 def move(job,outputdir,remove = False, overwrite = False):
@@ -172,8 +186,8 @@ def move(job,outputdir,remove = False, overwrite = False):
                     os.remove(src)
 
 
-# Removes locally stored files.
 def remove(job):
+    '''Removes locally stored files.'''
     job, jobList = getJobList(job)
     for j in jobList:
         dir = j.outputdir
@@ -183,10 +197,8 @@ def remove(job):
                 #print os.path.join(dir,file)
                 os.remove(os.path.join(dir,file))
                 
-def download(job,targetDir=None,force_redownload=False,sub_list=None):
-
 def queueDownload(joblist,targetDirBase=None,force_redownload=False):
-  #joblist may be jobs.select, or array of jobs or array of jobids
+  '''joblist may be jobs.select, or array of jobs or array of jobids'''
   for job in joblist:
     job,joblist = getJobList(job)
     targetdir=None
