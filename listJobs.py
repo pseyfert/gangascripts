@@ -4,7 +4,7 @@
 from Ganga.GPI import jobs
 
 
-def ljobs(self = jobs, interactive = 0):
+def ljobs(self = jobs, interactive = 1):
     retVal = 'Job slice: ' + self._impl.name + ' (' + str(len(self)) + ' jobs):\n\n'
     if (0 != interactive):
         colors = { 'failed':'31', 'killed':'31', 'submitted':'33',
@@ -67,8 +67,10 @@ def ljobs(self = jobs, interactive = 0):
                           colors['completed'], ncompleted,
                           njobs, col, j.status,
                           backendname, appname, appver, j.name));
-    return retVal
+    print retVal
+    return ""
 
+# patch jobs to use ljobs as new display method
 jobs.__class__._olddisplay=jobs.__class__._display;
 jobs.__class__._display=ljobs;
 
