@@ -22,8 +22,8 @@ def removeJobAndData(job):
 def move_lfn_to_eos(lfn):
   lfn.replicate('CERN-USER')
   reps = lfn.getReplicas()
-  if 'CERN-USER' in reps.keys():
-     for key in reps.keys():
+  if 'CERN-USER' in reps[0].keys():
+     for key in reps[0].keys():
         if key != 'CERN-USER':
             print "there is still a replica at ",key
             print "removal atm not implemented"
