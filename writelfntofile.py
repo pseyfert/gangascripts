@@ -1,6 +1,6 @@
 def write_lfn_to_txt(jobidlist):
-    with open(jobs(jobidlist[0]).name + ".txt","w") as f:
-        for jid in jobsidlist:
+    for jid in jobidlist:
+        with open(jobs(jid).name + ".txt","w") as f:
             j = jobs(jid)
             for sj in j.subjobs:
                 for of in sj.outputfiles:
