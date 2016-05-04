@@ -1,9 +1,16 @@
 def removeLFNs_subjobs(job,sublist):
     ds = LHCbDataset()
     if type(job.backend)==Dirac:
-        for sj in sublist:
-            if job.subjobs(sj).status == 'completed':
-              ds.extend(job.subjobs(sj).backend.getOutputDataLFNs())
+        for sjid in sublist:
+            sj = job.subjobs(sjid)
+            if sj.status == 'completed':
+                 for of in sj.outputfiles:
+                     try:
+                          the_lfn = of.lfn
+                     except AttributeError:
+                          pass
+                     else:
+                          ds.extend(of)
         for lfn in ds:
             lfn.remove()
 def removeLFNs(job):
@@ -11,7 +18,13 @@ def removeLFNs(job):
     if type(job.backend)==Dirac:
         for sj in job.subjobs:
             if sj.status == 'completed':
-              ds.extend(sj.backend.getOutputDataLFNs())
+                 for of in sj.outputfiles:
+                     try:
+                          the_lfn = of.lfn
+                     except AttributeError:
+                          pass
+                     else:
+                          ds.extend(of)
         for lfn in ds:
             lfn.remove()
 
