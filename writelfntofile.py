@@ -2,7 +2,7 @@ def write_lfn_to_txt(jobidlist):
     for jid in jobidlist:
         with open(jobs(jid).name + ".txt","w") as f:
             j = jobs(jid)
-            for sj in j.subjobs:
+            for sj in j.subjobs.select(status="completed"):
                 for of in sj.outputfiles:
                     if of.namePattern == 'summary.xml':
                         continue
