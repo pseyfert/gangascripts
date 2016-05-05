@@ -32,14 +32,17 @@ def removeJobAndData(job):
     removeLFNs(job)
     job.remove()
 
-def move_lfn_to_eos(lfn):
-  lfn.replicate('CERN-USER')
-  reps = lfn.getReplicas()
+def move_lfn_to_eos(diracfile):
+    '''
+    returns None if the only replicate is at cern, the lfn (as string) otherwise
+    '''
+  diracfile.replicate('CERN-USER')
+  reps = diracfile.getReplicas()
   if 'CERN-USER' in reps[0].keys():
      for key in reps[0].keys():
         if key != 'CERN-USER':
-            print "there is still a replica at ",key
-            print "removal atm not implemented"
+            return diracfile.lfn
+  return None
 
 def move_job_to_eos(job):
     ds = LHCbDataset()
@@ -53,5 +56,12 @@ def move_job_to_eos(job):
                         pass
                     else:
                         ds.extend(of)
-        for lfn in ds:
-            move_lfn_to_eos(lfn)
+        files_which_need_cleaning = []
+        for fileobject in ds:
+            retval = move_lfn_to_eos(fileobject)
+            if retval is not None:
+                files_which_need_cleaning.append(retval)
+        if 0!=len(files_which_need_cleaning):
+            import subprocess
+            subprocess.call(["lb-run","LHCbDirac","v8r2p41","python","/afs/cern.ch/user/p/pseyfert/gangascripts/clean_replicas.py"]+files_which_need_cleaning)
+
