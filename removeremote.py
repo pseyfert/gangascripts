@@ -21,6 +21,8 @@ def removeLFNs(job):
                  for of in sj.outputfiles:
                      try:
                           the_lfn = of.lfn
+                          if the_lfn=="":
+                               raise AttributeError
                      except AttributeError:
                           pass
                      else:
@@ -36,7 +38,9 @@ def move_lfn_to_eos(diracfile):
     '''
     returns None if the only replicate is at cern, the lfn (as string) otherwise
     '''
-  diracfile.replicate('CERN-USER')
+  reps = diracfile.getReplicas()
+  if 'CERN-USER' not in reps[0].keys():
+      diracfile.replicate('CERN-USER')
   reps = diracfile.getReplicas()
   if 'CERN-USER' in reps[0].keys():
      for key in reps[0].keys():
