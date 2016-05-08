@@ -38,15 +38,15 @@ def move_lfn_to_eos(diracfile):
     '''
     returns None if the only replicate is at cern, the lfn (as string) otherwise
     '''
-  reps = diracfile.getReplicas()
-  if 'CERN-USER' not in reps[0].keys():
-      diracfile.replicate('CERN-USER')
-  reps = diracfile.getReplicas()
-  if 'CERN-USER' in reps[0].keys():
-     for key in reps[0].keys():
-        if key != 'CERN-USER':
-            return diracfile.lfn
-  return None
+    reps = diracfile.getReplicas()
+    if 'CERN-USER' not in reps[0].keys():
+        diracfile.replicate('CERN-USER')
+    reps = diracfile.getReplicas()
+    if 'CERN-USER' in reps[0].keys():
+       for key in reps[0].keys():
+          if key != 'CERN-USER':
+              return diracfile.lfn
+    return None
 
 def move_job_to_eos(job):
     ds = LHCbDataset()
