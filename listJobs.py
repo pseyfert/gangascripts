@@ -52,8 +52,12 @@ def ljobs(self = jobs, interactive = 1):
             backendname = backendbuffer;
         if (None != j.application.__class__):
             appname = j.application.__class__.__name__;
-            if ('version' in j.application._impl.__dict__['_data']):
+            try:
                 appver = j.application.version;
+            except KeyError:
+                appver = "n/a"
+            except AttributeError:
+                appver = "n/a"
         # print output for current job
         retVal = (retVal +
                   '%4d \033[%sm%4d\033[m/\033[%sm%4d\033[m/\033[%sm%4d\033[m/%4d\033[m/'
