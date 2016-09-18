@@ -1,7 +1,21 @@
-def write_lfn_to_txt(jobidlist):
+def write_lfn_to_txt(jobidlist,targetdir = "."):
+    """write lfns of a job to text file "jobname.jobid.lfn.txt"
+
+    Keyword arguments:
+    targetdir (optional) -- target directory (trailing slash not necessary)
+    jobidlist            -- job(s) of interest (job object, jobid, list of ids, list of jobs, mixed list)
+    """
+    if not isinstance(jobidlist,list):
+        jobidlist = [jobidlist]
     for jid in jobidlist:
-        with open(jobs(jid).name + ".txt","w") as f:
-            j = jobs(jid)
+        if isinstance(jid,int):
+            job = jobs(jid)
+            jid = jid
+        else:
+            job = jid
+            jid = job.id
+        with open(targetdir + "/" + job.name + "." + str(jid) + ".lfn.txt","w") as f:
+            j = job
             for sj in j.subjobs.select(status="completed"):
                 for of in sj.outputfiles:
                     if of.namePattern == 'summary.xml':
@@ -13,8 +27,40 @@ def write_lfn_to_txt(jobidlist):
                     else:
                         f.write(of.lfn)
                         f.write("\n")
-    # draft
-    #import subprocess
-    #subprocess.call("dirac-dms-lfn-accessURL "+jobs(jobidlist[0]).name +'.txt CERN-USER | grep eoslhcb | sed "s/ *$//" | sed "s/.* //"[ >> '+jobs(jobidlist[0]).name +'.replace '
 
+
+
+def write_access_url_to_txt(jobidlist,targetdir = "."):
+    """write access urls of a job to text file "jobname.jobid.pfn.txt"
+
+    Keyword arguments:
+    targetdir (optional) -- target directory (trailing slash not necessary)
+    jobidlist            -- job(s) of interest (job object, jobid, list of ids, list of jobs, mixed list)
+    """
+    if not isinstance(jobidlist,list):
+        jobidlist = [jobidlist]
+    for jid in jobidlist:
+        if isinstance(jid,int):
+            job = jobs(jid)
+            jid = jid
+        else:
+            job = jid
+            jid = job.id
+        with open(targetdir + "/" + job.name + "." + str(jid) + ".pfn.txt","w") as f:
+            j = job
+            lfns = []
+            for sj in j.subjobs.select(status="completed"):
+                for of in sj.outputfiles:
+                    if of.namePattern == 'summary.xml':
+                        continue
+                    try:
+                        of.lfn
+                    except AttributeError:
+                        pass
+                    else:
+                        lfns.append(lfn)
+            import subprocess
+            import os
+            homedir = os.environ['HOME']
+            f.write(subprocess.check_output(["lb-run","LHCbDirac","prod","python",homedir+"/gangascripts/get_access_urls.py"]+lfns))
 

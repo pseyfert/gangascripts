@@ -40,13 +40,19 @@ def move_lfn_to_eos(diracfile):
     '''
     reps = diracfile.getReplicas()
     if 'CERN-USER' not in reps[0].keys():
-        diracfile.replicate('CERN-USER')
+        retval = diracfile.replicate('CERN-USER')
+        try:
+             isOkay = retval['OK']
+        except:
+             isOkay = True
     reps = diracfile.getReplicas()
     if 'CERN-USER' in reps[0].keys():
        for key in reps[0].keys():
           if key != 'CERN-USER':
-              return diracfile.lfn
-    return None
+              # file is not only at CERN-USER, needs cleaning
+              return "cleanme"
+       return "onlycern"
+    return "notcern"
 
 def move_job_to_eos(job):
     ds = LHCbDataset()
@@ -61,11 +67,18 @@ def move_job_to_eos(job):
                     else:
                         ds.extend(of)
         files_which_need_cleaning = []
+        failures = []
         for fileobject in ds:
             retval = move_lfn_to_eos(fileobject)
-            if retval is not None:
-                files_which_need_cleaning.append(retval)
+            if retval == "cleanme":
+                files_which_need_cleaning.append(fileobject.lfn)
+            if retval == "notcern":
+                failures.append(fileobject.lfn)
         if 0!=len(files_which_need_cleaning):
             import subprocess
-            subprocess.call(["lb-run","LHCbDirac","v8r2p41","python","/afs/cern.ch/user/p/pseyfert/gangascripts/clean_replicas.py"]+files_which_need_cleaning)
+            import os
+            homedir = os.environ['HOME']
+            subprocess.call(["lb-run","LHCbDirac","prod","python",homedir+"/gangascripts/clean_replicas.py"]+files_which_need_cleaning)
+        if 0!=len(failures):
+            print "SOME FILES DIDN'T REACH CERN"
 
