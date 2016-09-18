@@ -77,8 +77,11 @@ def move_job_to_eos(job):
         if 0!=len(files_which_need_cleaning):
             import subprocess
             import os
-            homedir = os.environ['HOME']
-            subprocess.call(["lb-run","LHCbDirac","prod","python",homedir+"/gangascripts/clean_replicas.py"]+files_which_need_cleaning)
+            try:
+                gangascriptdir = os.environ['GANGASCRIPTS']
+            except KeyError:
+                gangascriptdir = os.environ['HOME'] + "/gangascripts"
+            subprocess.call(["lb-run","LHCbDirac","prod","python",gangascriptdir+"/clean_replicas.py"]+files_which_need_cleaning)
         if 0!=len(failures):
             print "SOME FILES DIDN'T REACH CERN"
 

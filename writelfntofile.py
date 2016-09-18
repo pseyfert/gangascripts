@@ -58,9 +58,11 @@ def write_access_url_to_txt(jobidlist,targetdir = "."):
                     except AttributeError:
                         pass
                     else:
-                        lfns.append(lfn)
+                        lfns.append(of.lfn)
             import subprocess
             import os
-            homedir = os.environ['HOME']
-            f.write(subprocess.check_output(["lb-run","LHCbDirac","prod","python",homedir+"/gangascripts/get_access_urls.py"]+lfns))
-
+            try:
+                gangascriptdir = os.environ['GANGASCRIPTS']
+            except KeyError:
+                gangascriptdir = os.environ['HOME'] + "/gangascripts"
+            f.write(subprocess.check_output(["lb-run","LHCbDirac","prod","python",gangascriptdir+"/get_access_urls.py"]+lfns))
