@@ -43,13 +43,7 @@ def ljobs(self = jobs, interactive = 1):
             backendname = j.backend.__class__.__name__;
         if (None != j.backend.actualCE):
             backendname = j.backend.actualCE;
-        while (15>len(backendname)) :
-            backendname = backendname+" ";
-        if (15<len(backendname)) :
-            backendbuffer = ""
-            for i in range(15):
-               backendbuffer = backendbuffer + backendname[i];
-            backendname = backendbuffer;
+        backendname = '{:<15}'.format(backendname[:15])
         if (None != j.application.__class__):
             appname = j.application.__class__.__name__;
             try:
