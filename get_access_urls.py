@@ -54,7 +54,7 @@ else:
                 pass
             else:
                 import subprocess
-                output = subprocess.check_output(["dirac-dms-lfn-accessURL","--Protocol=root,xroot"]+site_lfn_maps[site]+[site])
+                output = subprocess.check_output(["dirac-dms-lfn-accessURL","--Protocol=xroot,root"]+site_lfn_maps[site]+[site])
                 urllines = []
                 local_dict = {}
                 for line in output.split('\n'):
